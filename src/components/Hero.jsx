@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, Container, Typography, Grid } from '@mui/material'
+import { Box, Container, Typography } from '@mui/material'
 import HeroBG from '../assets/hero_bg.jpg'
 import { useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
@@ -8,7 +8,7 @@ import CardForm from './CardForm';
 const Hero = () => {
 
   const theme = useTheme()
-  const mainColor = theme.palette.primary.main;
+  const mainColor = theme.palette.primary.main
   
   return (
     <Box

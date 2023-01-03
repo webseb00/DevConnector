@@ -37,7 +37,9 @@ const CardForm = () => {
   const onSubmit = async formData => {
     try {
       setLoading(true)
+
       const { first_name, last_name, email, password } = formData
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
