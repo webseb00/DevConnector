@@ -119,7 +119,7 @@ const Header = () => {
                   </Button>
                 ))}
               </Box>
-              <Box sx={{ flexGrow: 0 }}>
+              <Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
                 <Box
                   component="div"
                   sx={{
@@ -127,7 +127,7 @@ const Header = () => {
                     alignItems: 'center'
                   }}
                 >
-                  <Typography marginRight="10px">{full_name}</Typography>
+                  <Typography marginRight="10px" sx={{ display: { xs: 'none', md: 'flex' } }}>{full_name}</Typography>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                       <Avatar alt="Remy Sharp" src="https://e7.pngegg.com/pngimages/926/34/png-clipart-computer-icons-user-profile-avatar-avatar-face-heroes.png" />
