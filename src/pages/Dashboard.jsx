@@ -11,7 +11,8 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { 
-  Experience
+  Experience,
+  EditProfile
 } from '../components'
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -90,7 +91,7 @@ const Dashboard = () => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          Item Onedd
+          <EditProfile />
         </TabPanel>
         <TabPanel value={value} index={1}>
           <Experience />

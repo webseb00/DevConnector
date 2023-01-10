@@ -1,17 +1,32 @@
 import { createApi, fakeBaseQuery } from '@reduxjs/toolkit/query/react'
-// import { supabase } from '../supabaseClient'
+import { supabase } from '../supabaseClient'
 
 export const supabaseApi = createApi({
   reducerPath: 'supabaseApi',
   baseQuery: fakeBaseQuery(),
   endpoints: (build) => ({
-    signUp: build.query({
-      queryFn: (data) => {
-        console.log(data)
+    fetchUserProfile: build.query({
+      queryFn: async (userId) => {
+        const user = await supabase
+          .from('profiles')
+          .select()
+          .eq('id', userId)
+
+        return { data: user }
+      }
+    }),
+    fetchUserSocials: build.query({
+      queryFn: async (userId) => {
+        const user = await supabase
+          .from('socials')
+          .select()
+          .eq('user_id', userId)
+
+        return { data: user }
       }
     })
   })
 })
 
 
-export const { useSignUpQuery } = supabaseApi
+export const { useFetchUserProfileQuery, useFetchUserSocialsQuery } = supabaseApi
