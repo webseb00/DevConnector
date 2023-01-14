@@ -12,7 +12,8 @@ import { useSelector } from 'react-redux'
 
 import { 
   Experience,
-  EditProfile
+  EditProfile,
+  Education
 } from '../components'
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
@@ -20,7 +21,6 @@ import SchoolIcon from '@mui/icons-material/School';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
 
 const Dashboard = () => {
-
   const user = useSelector(state => state.auth.user)
   const { user_metadata: { full_name } } = user
 
@@ -97,7 +97,7 @@ const Dashboard = () => {
           <Experience />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          Item Three
+          <Education />
         </TabPanel>
       </Box>
     </Container>

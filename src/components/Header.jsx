@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
+
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import LogoutIcon from '@mui/icons-material/Logout';
+import SettingsIcon from '@mui/icons-material/Settings';
+
 import { 
   AppBar,
   Toolbar,
@@ -12,12 +15,14 @@ import {
   Tooltip,
   IconButton,
   Menu,
-  MenuItem,
-  Avatar 
+  MenuItem
 } from '@mui/material';
+
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { signOut } from '../features/auth/authSlice';
+
+import AvatarWidget from './AvatarWidget';
 
 const Header = () => {
 
@@ -52,6 +57,7 @@ const Header = () => {
   }
 
   const { user, session } = useSelector(state => state.auth)
+  const { profile } = useSelector(state => state.profile)
 
   return (
     <AppBar 
@@ -65,8 +71,8 @@ const Header = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href="/"
+            component={RouterLink}
+            to="/"
             sx={{
               mr: 2,
               fontSize: '1.5rem',
@@ -129,7 +135,11 @@ const Header = () => {
                   <Typography marginRight="10px" sx={{ display: { xs: 'none', md: 'flex' } }}>{user.user_metadata.full_name}</Typography>
                   <Tooltip title="Open settings">
                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                      <Avatar alt="Remy Sharp" src="https://e7.pngegg.com/pngimages/926/34/png-clipart-computer-icons-user-profile-avatar-avatar-face-heroes.png" />
+                      <AvatarWidget 
+                        fullName={user.user_metadata.full_name} 
+                        size={40}
+                        url={profile?.avatar_url}
+                      />
                     </IconButton>
                   </Tooltip>
                 </Box>
@@ -153,10 +163,29 @@ const Header = () => {
                     <Typography 
                       sx={{
                         display: 'flex',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        textDecoration: 'none',
+                        color: 'inherit'
                       }}
+                      component={RouterLink}
+                      to="/dashboard"
                     >
-                      <AccountCircleIcon />
+                      <SettingsIcon sx={{ marginRight: '5px' }} />
+                      Dashboard
+                    </Typography>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <Typography 
+                      sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        textDecoration: 'none',
+                        color: 'inherit'
+                      }}
+                      component={RouterLink}
+                      to={`/profile/${user.id}`}
+                    >
+                      <AccountCircleIcon sx={{ marginRight: '5px' }} />
                       Profile
                     </Typography>
                   </MenuItem>
@@ -167,7 +196,7 @@ const Header = () => {
                         alignItems: 'center'
                       }}
                     >
-                      <LogoutIcon />
+                      <LogoutIcon sx={{ marginRight: '5px' }} />
                       Logout
                     </Typography>
                   </MenuItem>

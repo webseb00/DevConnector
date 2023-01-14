@@ -12,6 +12,7 @@ import {
   REGISTER,
 } from 'redux-persist'
 import authReducer from '../features/auth/authSlice'
+import profileReducer from '../features/profile/profileSlice'
 
 const persistConfig = {
   key: 'root',
@@ -25,7 +26,8 @@ export const store = configureStore({
   reducer: {
     // Add the generated reducer as a specific top-level slice
     [supabaseApi.reducerPath]: supabaseApi.reducer,
-    auth: persistedReducer
+    auth: persistedReducer,
+    profile: profileReducer
   },
   // Adding the api middleware enables caching, invalidation, polling,
   // and other useful features of `rtk-query`.

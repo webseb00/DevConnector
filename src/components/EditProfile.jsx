@@ -7,10 +7,8 @@ import {
   CircularProgress,
   Button,
   InputAdornment,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem
+  MenuItem,
+  Paper
 } from '@mui/material'
 import {
   AiFillLinkedin,
@@ -23,34 +21,34 @@ import { useSelector } from 'react-redux';
 import { useFetchUserProfileQuery, useFetchUserSocialsQuery } from '../services/supabaseApi';
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
+import AvatarWidget from './AvatarWidget';
 
 const select = ['developer', 'junior developer', 'senior developer', 'manager', 'student', 'other']
 
 const EditProfile = () => {
 
-  const userId = useSelector(state => state.auth.user.id)
+  const { id: userId, user_metadata: { full_name } } = useSelector(state => state.auth.user)
+  const { profile } = useSelector(state => state.profile)
 
-  const [userData, setUserData] = useState('')
   const [userSocialData, setUserSocialData] = useState('')
 
-  const { data } = useFetchUserProfileQuery(userId, { refetchOnMountOrArgChange: true })
   const { data: socialData } = useFetchUserSocialsQuery(userId, { refetchOnMountOrArgChange: true })
 
   const [profession, setProfession] = useState('')
+
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-
   
   const { handleSubmit, register, formState: { errors }, control, reset } = useForm({ 
     defaultValues: {
-      username: userData?.username || '',
-      location: userData?.location || '',
-      website: userData?.website || '',
-      skills: userData?.skills || '',
-      githubUserName: userData?.githubUserName || '',
-      bio: userData?.bio || '',
-      status: userData?.status || profession,
-      company: userData?.company || '',
+      username: profile?.username || '',
+      location: profile?.location || '',
+      website: profile?.website || '',
+      skills: profile?.skills || '',
+      githubUserName: profile?.githubUserName || '',
+      bio: profile?.bio || '',
+      status: profile?.status || profession,
+      company: profile?.company || '',
       youtube: userSocialData?.youtube || '',
       twitter: userSocialData?.twitter || '',
       instagram: userSocialData?.instagram || '',
@@ -60,13 +58,10 @@ const EditProfile = () => {
   })
 
   useEffect(() => {
-    if(data?.data[0]) {
-      setUserData(data?.data[0])
-      setUserSocialData(socialData?.data[0])
-
-      reset(data.data[0])
+    if(profile) {
+      reset(profile)
     }
-  }, [data, socialData, reset])
+  }, [profile, reset])
 
   const handleProfession = e => setProfession(e.target.value)
 
@@ -131,8 +126,26 @@ const EditProfile = () => {
         </Typography>
       </Box>
       <Box component="form" onSubmit={handleSubmit(onSubmit)}>
-        <Box>
-
+        <Box marginBottom="2rem">
+          <Paper
+            variant="outlined"
+            square
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column',
+              padding: '1.4rem'
+            }}
+          >
+            <AvatarWidget 
+              fullName={full_name}
+              userID={userId} 
+              size={80} 
+              uploadButton={true}
+              url={profile?.avatar_url}
+            />
+          </Paper>
         </Box>
         <Box>
           <Controller 
