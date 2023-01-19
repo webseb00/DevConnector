@@ -6,8 +6,8 @@ import {
   Home,
   Login,
   Dashboard,
-  CreateProfile,
-  Profile
+  Profile,
+  Developers
 } from './pages'
 
 import ProtectedRoutes from './components/routing/ProtectedRoutes'
@@ -20,7 +20,7 @@ import { signOut } from './features/auth/authSlice'
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { useJwt } from 'react-jwt'
+import { skipToken } from '@reduxjs/toolkit/query/react'
 
 function App() {
 
@@ -28,24 +28,13 @@ function App() {
   const dispatch = useDispatch()
   const auth = useSelector(state => state.auth)
 
-  const { decodedToken, isExpired } = useJwt(auth?.session?.access__token);
-
-  const { data, isLoading } = useFetchUserProfileQuery(auth.user.id)
+  const { data, isLoading } = useFetchUserProfileQuery(auth.user ? auth.user.id : skipToken )
 
   useEffect(() => {
-    console.log(isLoading)
-    if(data && data.data[0]) {
+    if(data && data.data) {
       dispatch(setUserProfile(data.data[0]))
     }
   }, [isLoading])
-
-  useEffect(() => {
-    console.log(isExpired)
-    if(auth?.session?.access__token && isExpired) {
-      dispatch(signOut())
-      navigate('/')
-    }
-  }, [auth])
 
   return (
     <>
@@ -56,8 +45,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route element={<ProtectedRoutes />}>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/create-profile" element={<CreateProfile />} />
             <Route path="/profile/:id" element={<Profile />} />
+            <Route path="/developers" element={<Developers />} />
           </Route>
         </Routes>
       </Layout>

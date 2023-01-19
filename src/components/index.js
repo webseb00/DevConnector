@@ -1,9 +1,13 @@
-import Experience from "./Experience"
-import EditProfile from "./EditProfile"
-import Education from "./Education"
+import ExperienceTab from "./ExperienceTab"
+import EditProfileTab from "./EditProfileTab"
+import EducationTab from "./EducationTab"
+import ProfileItem from "./ProfileItem"
+import SocialsTab from "./SocialsTab"
 
 export {
-  Experience,
-  EditProfile,
-  Education
+  ExperienceTab,
+  EditProfileTab,
+  EducationTab,
+  ProfileItem,
+  SocialsTab
 }

@@ -11,14 +11,16 @@ import { Link as RouterLink } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { 
-  Experience,
-  EditProfile,
-  Education
+  ExperienceTab,
+  EditProfileTab,
+  EducationTab,
+  SocialsTab
 } from '../components'
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import SchoolIcon from '@mui/icons-material/School';
 import AccountBoxIcon from '@mui/icons-material/AccountBox';
+import PublicIcon from '@mui/icons-material/Public';
 
 const Dashboard = () => {
   const user = useSelector(state => state.auth.user)
@@ -31,12 +33,18 @@ const Dashboard = () => {
   };
 
   return (
-    <Container maxWidth="lg">
+    <Container
+      maxWidth="md"
+    >
       <Box
         margin="3rem 0"
+        backgroundColor="custom_silver.main"
+        borderRadius="4px"
+        padding="1rem"
       >
         <Box
           component="div"
+          textAlign="center"
         >
           <Typography
             variant="h2"
@@ -53,7 +61,7 @@ const Dashboard = () => {
             variant="subtitle1"
             lineHeight="1.2"
           >
-            Welcome to your dashboard <Link component={RouterLink} to="/">{full_name}</Link>
+            Welcome to your dashboard <Link component={RouterLink} to={`/profile/${user.id}`}>{full_name}</Link>
             <br />
             Dashboard is a place where you can manage your profile.
           </Typography>
@@ -62,42 +70,56 @@ const Dashboard = () => {
           <Tabs 
             value={value} 
             onChange={handleChange} 
-            centered 
+            variant="scrollable"
             scrollButtons
             allowScrollButtonsMobile
-            sx={{ minHeight: 'unset' }}
+            sx={{ 
+              minHeight: 'unset',
+              '& .MuiTabs-flexContainer': {
+                justifyContent: {
+                  xs: 'unset',
+                  lg: 'center'
+                }
+              }
+            }}
           >
             <Tab 
               icon={<AccountBoxIcon />} 
-              iconPosition="start"
               label="Edit Profile" 
               {...a11yProps(0)}
               sx={{ minHeight: 'unset' }} 
             />
             <Tab 
               icon={<AssignmentIcon />} 
-              iconPosition="start"
               label="Add Experience" 
               {...a11yProps(1)}
               sx={{ minHeight: 'unset' }} 
             />
             <Tab 
               icon={<SchoolIcon />} 
-              iconPosition="start"
               label="Add Education" 
               {...a11yProps(2)}
+              sx={{ minHeight: 'unset' }} 
+            />
+            <Tab 
+              icon={<PublicIcon />} 
+              label="Add Socials" 
+              {...a11yProps(3)}
               sx={{ minHeight: 'unset' }} 
             />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <EditProfile />
+          <EditProfileTab />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <Experience />
+          <ExperienceTab />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <Education />
+          <EducationTab />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <SocialsTab />
         </TabPanel>
       </Box>
     </Container>

@@ -6,54 +6,34 @@ import {
   TextField,
   CircularProgress,
   Button,
-  InputAdornment,
   MenuItem,
   Paper
 } from '@mui/material'
-import {
-  AiFillLinkedin,
-  AiFillTwitterSquare,
-  AiFillInstagram,
-  AiFillYoutube,
-  AiFillGithub
-} from 'react-icons/ai'
 import { useSelector } from 'react-redux';
-import { useFetchUserProfileQuery, useFetchUserSocialsQuery } from '../services/supabaseApi';
 import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 import AvatarWidget from './AvatarWidget';
 
-const select = ['developer', 'junior developer', 'senior developer', 'manager', 'student', 'other']
+const select = ['Developer', 'Junior Developer', 'Senior Developer', 'Manager', 'Student', 'Other']
 
-const EditProfile = () => {
+const EditProfileTab = () => {
 
   const { id: userId, user_metadata: { full_name } } = useSelector(state => state.auth.user)
   const { profile } = useSelector(state => state.profile)
-
-  const [userSocialData, setUserSocialData] = useState('')
-
-  const { data: socialData } = useFetchUserSocialsQuery(userId, { refetchOnMountOrArgChange: true })
-
+  
   const [profession, setProfession] = useState('')
-
-  const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   
   const { handleSubmit, register, formState: { errors }, control, reset } = useForm({ 
     defaultValues: {
-      username: profile?.username || '',
+      user_name: profile?.user_name || '',
       location: profile?.location || '',
       website: profile?.website || '',
       skills: profile?.skills || '',
       githubUserName: profile?.githubUserName || '',
       bio: profile?.bio || '',
       status: profile?.status || profession,
-      company: profile?.company || '',
-      youtube: userSocialData?.youtube || '',
-      twitter: userSocialData?.twitter || '',
-      instagram: userSocialData?.instagram || '',
-      github: userSocialData?.github || '',
-      linkedin: userSocialData?.linkedin || '',
+      company: profile?.company || ''
     }
   })
 
@@ -66,7 +46,7 @@ const EditProfile = () => {
   const handleProfession = e => setProfession(e.target.value)
 
   const onSubmit = async formData => {
-    const { username, location, website, skills, githubUserName, bio, company, youtube, twitter, instagram, github, linkedin } = formData
+    const { user_name, location, website, skills, githubUserName, bio, company } = formData
     const status = profession
     
     try {
@@ -74,17 +54,10 @@ const EditProfile = () => {
 
       const { error } = await supabase
         .from('profiles')
-        .upsert({ id: userId, username, location, status, website, skills, githubUserName, bio, company })
-        .select()
-
-      const { error: errSocial } = await supabase
-        .from('socials')
-        .upsert({ user_id: userId, youtube, twitter, instagram, github, linkedin })
+        .upsert({ id: userId, user_name, location, status, website, skills, githubUserName, bio, company })
         .select()
 
       if(error) throw error
-
-      if(errSocial) throw errSocial
 
       toast.success('Your profile was updated!', {
         position: 'bottom-center',
@@ -135,7 +108,9 @@ const EditProfile = () => {
               justifyContent: 'center',
               alignItems: 'center',
               flexDirection: 'column',
-              padding: '1.4rem'
+              padding: '1.4rem',
+              backgroundColor: 'custom_slate.main',
+              borderRadius: '5px'
             }}
           >
             <AvatarWidget 
@@ -149,21 +124,22 @@ const EditProfile = () => {
         </Box>
         <Box>
           <Controller 
-            name="username"
+            name="user_name"
             control={control}
             render={({ field }) => (
               <TextField 
                 { ...field }
                 type="text"
                 label="Your username"
-                variant="filled"
+                variant="outlined"
                 size="small"
-                {...register('username', { minLength: 2 })}
+                {...register('user_name', { minLength: 2 })}
                 helperText={errors && errors?.position && "Field is required"}
                 error={errors && errors?.position ? true : false}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -176,12 +152,13 @@ const EditProfile = () => {
                 { ...field }
                 type="text"
                 label="Your location"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 {...register('location')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -194,12 +171,13 @@ const EditProfile = () => {
                 { ...field }
                 type="text"
                 label="Your current company"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 {...register('company')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -212,7 +190,7 @@ const EditProfile = () => {
                 id="outlined-select-currency"
                 select
                 label="Select your profession"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 fullWidth
                 value={profession}
@@ -221,7 +199,8 @@ const EditProfile = () => {
                 {...register('status')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               >
                 {select.map((el, idx) => (
@@ -239,12 +218,13 @@ const EditProfile = () => {
                 type="text"
                 label="Website URL"
                 fullWidth
-                variant="filled"
+                variant="outlined"
                 size="small"
                 {...register('website')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -257,13 +237,14 @@ const EditProfile = () => {
                 { ...field }
                 type="text"
                 label="Skills"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 helperText="Please separate skills with comma"
                 {...register('skills')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -276,13 +257,14 @@ const EditProfile = () => {
                 { ...field }
                 type="text"
                 label="Your github username"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 helperText="Leave empty if you don't have github account"
                 {...register('githubUserName')}
                 sx={{
                   marginBottom: '.7rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
@@ -297,150 +279,17 @@ const EditProfile = () => {
                 multiline
                 rows={6}
                 label="Little description about yourself"
-                variant="filled"
+                variant="outlined"
                 size="small"
                 {...register('bio')}
                 sx={{
                   marginBottom: '1rem',
-                  width: '100%'
+                  width: '100%',
+                  backgroundColor: 'custom_slate.light'
                 }} 
               />
             )}
           />
-          <Box>
-            <Button
-              variant="outlined"
-              color="info"
-              onClick={() => setOpen(prev => !prev)}
-              sx={{ marginBottom: '.7rem' }}
-            >
-              Add Social Network Links
-            </Button>
-            {open && (
-              <Box sx={{ marginTop: '1rem' }}>
-                <Controller 
-                  name="linkedin"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      { ...field }
-                      { ...register('linkedin') }
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      id="input-with-icon-textfield"
-                      label="LinkedIn"
-                      fullWidth
-                      sx={{ marginBottom: '.7rem' }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillLinkedin style={{ fontSize: '2rem' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-                <Controller 
-                  name="twitter"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      { ...field }
-                      {...register('twitter')}
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      id="input-with-icon-textfield"
-                      label="Twitter"
-                      fullWidth
-                      sx={{ marginBottom: '.7rem' }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillTwitterSquare style={{ fontSize: '2rem' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-                <Controller 
-                  name="instagram"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      {...register('instagram')}
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      id="input-with-icon-textfield"
-                      label="Instagram"
-                      fullWidth
-                      sx={{ marginBottom: '.7rem' }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillInstagram style={{ fontSize: '2rem' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-                <Controller 
-                  name="youtube"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      {...register('youtube')}
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      id="input-with-icon-textfield"
-                      label="YouTube"
-                      fullWidth
-                      sx={{ marginBottom: '.7rem' }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillYoutube style={{ fontSize: '2rem' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-                <Controller 
-                  name="github"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      {...register('github')}
-                      type="text"
-                      variant="outlined"
-                      size="small"
-                      id="input-with-icon-textfield"
-                      label="Github"
-                      fullWidth
-                      sx={{ marginBottom: '.7rem' }}
-                      InputProps={{
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <AiFillGithub style={{ fontSize: '2rem' }} />
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  )}
-                />
-              </Box>
-            )}
-          </Box>
         </Box>
         <Box
           sx={{
@@ -455,8 +304,7 @@ const EditProfile = () => {
             variant="contained"
             sx={{
               textTransform: 'none'
-            }}
-          >
+            }}>
             {
               !loading ? 'Submit' : 
               <>
@@ -471,4 +319,4 @@ const EditProfile = () => {
   )
 }
 
-export default EditProfile
+export default EditProfileTab

@@ -22,12 +22,13 @@ const AvatarWidget = ({ fullName, userID, size, uploadButton, url }) => {
   }, [avatarPath])
 
   const downloadImage = async (path) => {
+    console.log(path)
     try {
       const { data, error: downloadError } = await supabase.storage.from('avatars').download(path)
       if(downloadError) throw downloadError
-      
+      console.log(data)
       const url = URL.createObjectURL(data)
-
+      console.log(url)
       const { error: pathError } = await supabase.from('profiles').update({ avatar_url: url }).eq('id', userID)
       if(pathError) throw pathError
       

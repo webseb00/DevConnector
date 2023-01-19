@@ -16,45 +16,45 @@ import { supabase } from '../supabaseClient';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 
-const Experience = () => {
+const EducationTab = () => {
  
   const userID = useSelector(state => state.auth.user.id)
   const [loading, setLoading] = useState(false)
 
   const { handleSubmit, register, formState, formState: { errors, isSubmitSuccessful }, control, watch, reset } = useForm({
     defaultValues: {
-      position: '',
-      company: '',
-      location: '',
+      school: '',
+      degree: '',
+      fieldOfStudy: '',
       from_date: '',
       to_date: '',
-      current_job: false,
+      current_edu: false,
       description: ''
     }
   })
  
-  const watchFields = watch(['to_date', 'current_job', 'from_date']);
+  const watchFields = watch(['to_date', 'current_edu', 'from_date']);
   const dateErrorMsg = <p><b>To Date</b> can not be lower than <b>From Date</b></p>
 
   const onSubmit = async formData => {
     try {
       setLoading(true)
-      const { position, company, location, from_date, to_date, current_job, description } = formData
+      const { school, degree, fieldOfStudy, from_date, to_date, current_edu, description  } = formData
 
-      const { error } = await supabase.from('experience').insert({
-        title: position,
-        company, 
-        location, 
+      const { error } = await supabase.from('education').insert({
+        school,
+        degree, 
+        fieldOfStudy, 
         from: from_date,
         to: to_date,
-        current: current_job,
+        current: current_edu,
         description,
         user_id: userID
-      }, { returning: 'minimal' })
+      })
 
       if(error) throw error
 
-      toast.success('Your experience has been added!', {
+      toast.success('Your education has been added!', {
         position: 'bottom-center',
         theme: 'colored',
         hideProgressBar: true
@@ -74,12 +74,12 @@ const Experience = () => {
   useEffect(() => {
     if(isSubmitSuccessful) {
       reset({
-        position: '',
-        company: '',
-        location: '',
+        school: '',
+        degree: '',
+        fieldOfStudy: '',
         from_date: '',
         to_date: '',
-        current_job: false,
+        current_edu: false,
         description: ''
       })
     }
@@ -97,74 +97,77 @@ const Experience = () => {
           variant='h5'
           marginBottom=".5rem"
         >
-          Add Experience
+          Add Education
         </Typography>
         <Typography
           component="h5"
           variant="subtitle2"
           lineHeight="1.2"
         >
-          Add any job or position you have<br />
-          had in the past.
+          Add any school or bootcamp that you <br/>
+          have attended
         </Typography>
       </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller 
-          name="position"
+          name="school"
           control={control}
           render={({ field }) => (
             <TextField 
               { ...field }
               type="text"
-              label="Position"
-              variant="filled"
+              label="School name"
+              variant="outlined"
               size="small"
-              {...register('position', { required: true, minLength: 5 })}
-              helperText={errors && errors?.position && "Field is required"}
-              error={errors && errors?.position ? true : false}
+              {...register('school', { required: true, minLength: 5 })}
+              helperText={errors && errors?.school && "Field is required"}
+              error={errors && errors?.school ? true : false}
               sx={{
                 marginBottom: '.7rem',
-                width: '100%'
+                width: '100%', 
+                backgroundColor: 'custom_slate.light'
               }} 
             />
           )}
         />
         <Controller 
-          name="company"
+          name="degree"
           control={control}
           render={({ field }) => (
             <TextField 
               { ...field }
               type="text"
-              label="Company"
-              variant="filled"
+              label="Degree"
+              variant="outlined"
               size="small"
-              {...register('company', { required: true, minLength: 3 })}
+              {...register('degree', { required: true, minLength: 3 })}
               helperText={errors && errors?.company && "Field is required"}
               error={errors && errors?.company ? true : false}
               sx={{
                 marginBottom: '.7rem',
-                width: '100%'
+                width: '100%', 
+                backgroundColor: 'custom_slate.light'
               }} 
             />
           )}
         />
         <Controller 
-          name="location"
+          name="fieldOfStudy"
           control={control}
           render={({ field }) => (
             <TextField 
               { ...field }
               type="text"
-              label="Location"
-              variant="filled"
+              label="Field of study"
+              variant="outlined"
               size="small"
-              {...register('location', { required: true, minLength: 3 })}
+              {...register('fieldOfStudy', { required: true, minLength: 3 })}
               helperText={errors && errors?.location && "Field is required"}
               error={errors && errors?.location ? true : false}
               sx={{
                 marginBottom: '.7rem',
-                width: '100%'
+                width: '100%', 
+                backgroundColor: 'custom_slate.light'
               }} 
             />
           )}
@@ -219,7 +222,7 @@ const Experience = () => {
           <FormControlLabel
             control={
               <Controller
-                name="current_job"
+                name="current_edu"
                 control={control}
                 render={({ field }) => (
                   <Checkbox
@@ -229,7 +232,7 @@ const Experience = () => {
                 )}
               />
             }
-            label="Current job"
+            label="Current"
           />
         )}
         <Controller 
@@ -242,11 +245,12 @@ const Experience = () => {
               rows={5}
               multiline
               fullWidth
-              variant="filled"
-              label="Job description"
+              variant="outlined"
+              label="Field description"
               sx={{
                 marginBottom: '1rem',
-                display: 'block'
+                display: 'block', 
+                backgroundColor: 'custom_slate.light'
               }}
               {...register('description')}
             />
@@ -281,4 +285,4 @@ const Experience = () => {
   )
 }
 
-export default Experience
+export default EducationTab

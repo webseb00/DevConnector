@@ -40,12 +40,13 @@ const CardForm = () => {
 
       const { first_name, last_name, email, password } = formData
       
-      const { data, error } = await supabase.auth.signUp({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
-            full_name: `${first_name} ${last_name}`
+            full_name: `${first_name} ${last_name}`,
+            username: `${first_name}`
           }
         }
       })
