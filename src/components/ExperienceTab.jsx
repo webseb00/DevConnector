@@ -8,18 +8,27 @@ import {
   Input,
   InputLabel,
   CircularProgress,
-  Button
+  Button,
 } from '@mui/material'
-import { useForm, Controller } from "react-hook-form";
+
 import moment from 'moment/moment.js';
-import { supabase } from '../supabaseClient';
-import { toast } from 'react-toastify';
+
+import { useForm, Controller } from "react-hook-form";
+import { useAddExperienceItemMutation } from '../services/supabaseApi';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
+import ListIcon from '@mui/icons-material/List';
+
+import { ExperienceList, DashboardModal } from './'
 
 const ExperienceTab = () => {
  
+  const [addExperienceItem] = useAddExperienceItemMutation()
   const userID = useSelector(state => state.auth.user.id)
+
   const [loading, setLoading] = useState(false)
+  const [modal, setModal] = useState(false)
 
   const { handleSubmit, register, formState, formState: { errors, isSubmitSuccessful }, control, watch, reset } = useForm({
     defaultValues: {
@@ -41,16 +50,16 @@ const ExperienceTab = () => {
       setLoading(true)
       const { position, company, location, from_date, to_date, current_job, description } = formData
 
-      const { error } = await supabase.from('experience').insert({
+      const { error } = await addExperienceItem({
         title: position,
         company, 
         location, 
         from: from_date,
-        to: to_date,
+        to: !to_date ? null : to_date,
         current: current_job,
         description,
         user_id: userID
-      }, { returning: 'minimal' })
+      })
 
       if(error) throw error
 
@@ -87,6 +96,12 @@ const ExperienceTab = () => {
 
   return (
     <Box>
+      {modal && <DashboardModal
+                  modal={modal}
+                  setModal={setModal}
+                  title="Experience List"
+                  component={<ExperienceList userId={userID} />} 
+                 />}
       <Box
         sx={{
           textAlign: 'center',
@@ -107,6 +122,19 @@ const ExperienceTab = () => {
           Add any job or position you have<br />
           had in the past.
         </Typography>
+      </Box>
+      <Box
+        sx={{
+          margin: '2rem 0'
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<ListIcon />}
+          onClick={() => setModal(true)}
+        >
+          Experience List
+        </Button>
       </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller 

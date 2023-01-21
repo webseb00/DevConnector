@@ -41,8 +41,6 @@ const Profile = () => {
   const { data: educationData } = useFetchUserEducationQuery(params.id)
   const { data: experienceData } = useFetchUserExperienceQuery(params.id)
 
-  console.log(educationData)
-
   if(isLoadingProfile || isLoadingSocials) return (
     <Box
       sx={{
@@ -66,7 +64,6 @@ const Profile = () => {
 
   return (
     <Box 
-      
       sx={{
         padding: '2rem 0'
       }}

@@ -4,6 +4,7 @@ import { supabase } from '../supabaseClient'
 export const supabaseApi = createApi({
   reducerPath: 'supabaseApi',
   baseQuery: fakeBaseQuery(),
+  tagTypes: ['Education', 'Experience'],
   endpoints: (build) => ({
     fetchUserProfile: build.query({
       queryFn: async (userId) => {
@@ -33,7 +34,8 @@ export const supabaseApi = createApi({
           .eq('user_id', userId)
 
         return { data: user }
-      }
+      },
+      providesTags: ['Education']
     }),
     fetchUserExperience: build.query({
       queryFn: async (userId) => {
@@ -43,7 +45,50 @@ export const supabaseApi = createApi({
           .eq('user_id', userId)
 
         return { data: user }
-      }
+      },
+      providesTags: ['Experience']
+    }),
+    addEducationItem: build.mutation({
+      queryFn: async payload => {
+        const data = await supabase
+          .from('education')
+          .insert(payload)
+
+        return data
+      },
+      invalidatesTags: ['Education']
+    }),
+    removeEducationItem: build.mutation({
+      queryFn: async id => {
+        const user = await supabase
+          .from('education')
+          .delete()
+          .eq('id', id)
+
+        return { data: user }
+      },
+      invalidatesTags: ['Education']
+    }),
+    addExperienceItem: build.mutation({
+      queryFn: async payload => {
+        const data = await supabase
+          .from('experience')
+          .insert(payload)
+
+        return data
+      },
+      invalidatesTags: ['Experience']
+    }),
+    removeExperienceItem: build.mutation({
+      queryFn: async id => {
+        const user = await supabase
+          .from('experience')
+          .delete()
+          .eq('id', id)
+
+        return { data: user }
+      },
+      invalidatesTags: ['Experience']
     })
   })
 })
@@ -53,5 +98,9 @@ export const {
   useFetchUserProfileQuery, 
   useFetchUserSocialsQuery, 
   useFetchUserEducationQuery,
-  useFetchUserExperienceQuery 
+  useFetchUserExperienceQuery,
+  useAddEducationItemMutation,
+  useRemoveEducationItemMutation,
+  useAddExperienceItemMutation,
+  useRemoveExperienceItemMutation
 } = supabaseApi

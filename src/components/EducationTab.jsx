@@ -10,15 +10,23 @@ import {
   CircularProgress,
   Button
 } from '@mui/material'
-import { useForm, Controller } from "react-hook-form";
+
 import moment from 'moment/moment.js';
-import { supabase } from '../supabaseClient';
+
+import { useForm, Controller } from "react-hook-form";
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
+import { useAddEducationItemMutation } from '../services/supabaseApi';
+
+import ListIcon from '@mui/icons-material/List';
+import { EducationList, DashboardModal } from './'
 
 const EducationTab = () => {
- 
+  const [addEducationItem] = useAddEducationItemMutation()
+
   const userID = useSelector(state => state.auth.user.id)
+
+  const [modal, setModal] = useState(false)
   const [loading, setLoading] = useState(false)
 
   const { handleSubmit, register, formState, formState: { errors, isSubmitSuccessful }, control, watch, reset } = useForm({
@@ -41,12 +49,12 @@ const EducationTab = () => {
       setLoading(true)
       const { school, degree, fieldOfStudy, from_date, to_date, current_edu, description  } = formData
 
-      const { error } = await supabase.from('education').insert({
+      const { error } = await addEducationItem({
         school,
         degree, 
         fieldOfStudy, 
         from: from_date,
-        to: to_date,
+        to: !to_date ? null : to_date,
         current: current_edu,
         description,
         user_id: userID
@@ -87,6 +95,12 @@ const EducationTab = () => {
 
   return (
     <Box>
+      {modal && <DashboardModal
+                  modal={modal}
+                  setModal={setModal}
+                  title="Education List"
+                  component={<EducationList userId={userID} />} 
+                 />}
       <Box
         sx={{
           textAlign: 'center',
@@ -107,6 +121,19 @@ const EducationTab = () => {
           Add any school or bootcamp that you <br/>
           have attended
         </Typography>
+      </Box>
+      <Box
+        sx={{
+          margin: '2rem 0'
+        }}
+      >
+        <Button
+          variant="outlined"
+          startIcon={<ListIcon />}
+          onClick={() => setModal(true)}
+        >
+          Education List
+        </Button>
       </Box>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Controller 

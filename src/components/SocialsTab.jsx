@@ -69,7 +69,7 @@ const SocialsTab = () => {
 
   useEffect(() => { 
     if(socialData?.data[0]) {
-      reset(socialData)
+      reset(socialData.data[0])
     }
   }, [socialData, reset])
 
