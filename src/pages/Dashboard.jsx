@@ -78,7 +78,7 @@ const Dashboard = () => {
               '& .MuiTabs-flexContainer': {
                 justifyContent: {
                   xs: 'unset',
-                  lg: 'center'
+                  md: 'center'
                 }
               }
             }}

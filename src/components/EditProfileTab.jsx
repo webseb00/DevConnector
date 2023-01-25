@@ -32,7 +32,7 @@ const EditProfileTab = () => {
       skills: profile?.skills || '',
       githubUserName: profile?.githubUserName || '',
       bio: profile?.bio || '',
-      status: profile?.status || profession,
+      status: profile?.status || '',
       company: profile?.company || ''
     }
   })
@@ -46,8 +46,7 @@ const EditProfileTab = () => {
   const handleProfession = e => setProfession(e.target.value)
 
   const onSubmit = async formData => {
-    const { user_name, location, website, skills, githubUserName, bio, company } = formData
-    const status = profession
+    const { user_name, location, website, skills, githubUserName, bio, company, status } = formData
     
     try {
       setLoading(true)
@@ -193,8 +192,8 @@ const EditProfileTab = () => {
                 variant="outlined"
                 size="small"
                 fullWidth
-                value={profession}
-                onChange={handleProfession}
+                // value={profession}
+                // onChange={handleProfession}
                 {...field}
                 {...register('status')}
                 sx={{

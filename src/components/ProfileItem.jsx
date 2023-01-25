@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 import { Link as RouterLink } from 'react-router-dom';
+import CheckIcon from '@mui/icons-material/Check';
 
 import {
   Box,
@@ -26,8 +27,7 @@ const BoxItem = styled.div`
   color: ${({ palette }) => palette.custom_slate.dark};
 `
 
-const ProfileItem = ({ id, avatar_url, location, company, full_name, skills }) => {
-
+const ProfileItem = ({ id, avatar_url, location, company, full_name, skills, status }) => {
   const theme = useTheme()
   
   return (
@@ -68,6 +68,10 @@ const ProfileItem = ({ id, avatar_url, location, company, full_name, skills }) =
           sx={{
             display: 'flex',
             flexDirection: 'column',
+            alignItems: {
+              xs: 'center',
+              md: 'flex-start'
+            },
             justifyContent: 'space-evenly',
             marginLeft: {
               xs: 0,
@@ -91,16 +95,21 @@ const ProfileItem = ({ id, avatar_url, location, company, full_name, skills }) =
             >
               {full_name}
             </Typography>
-            {status && <Typography>{status}</Typography>}
-            {company && <Typography>{company}</Typography>}
+            {status && company ? <Typography>{status} at {company}</Typography> : ''}
+            {!status && company ? <Typography>{company}</Typography> : ''}
             {location && <Typography>{location}</Typography>}
           </Box>
           <Button
             component={RouterLink}
             to={`/profile/${id}`}
             variant="contained"
+            sx={{
+              textTransform: 'none',
+              fontSize: '1rem',
+              width: '140px'
+            }}
           >
-            View profile
+            View Profile
           </Button>
         </Box>
       </Box>
@@ -125,7 +134,7 @@ const ProfileItem = ({ id, avatar_url, location, company, full_name, skills }) =
           <Box>
             {skills.split(',').slice(0, 3).map((skill, idx) => (
               <BoxItem palette={theme.palette} key={idx}>
-                {skill.toUpperCase()}
+                <CheckIcon color="success" sx={{ marginRight: '2px' }} /> {skill.toUpperCase()}
               </BoxItem>
             ))}
           </Box>

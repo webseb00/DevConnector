@@ -6,6 +6,8 @@ import SocialsTab from "./SocialsTab"
 import DashboardModal from "./DashboardModal"
 import ExperienceList from "./ExperienceList"
 import EducationList from "./EducationList"
+import PageLoader from "./PageLoader"
+import AvatarWidget from "./AvatarWidget"
 
 export {
   ExperienceTab,
@@ -15,5 +17,7 @@ export {
   SocialsTab,
   DashboardModal,
   ExperienceList,
-  EducationList
+  EducationList,
+  PageLoader,
+  AvatarWidget
 }

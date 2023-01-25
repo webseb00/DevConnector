@@ -26,6 +26,15 @@ export const supabaseApi = createApi({
         return { data: user }
       }
     }),
+    fetchUsers: build.query({
+      queryFn: async () => {
+        const users = await supabase
+          .from('profiles')
+          .select()
+
+        return { data: users }
+      }
+    }),
     fetchUserEducation: build.query({
       queryFn: async (userId) => {
         const user = await supabase
@@ -102,5 +111,6 @@ export const {
   useAddEducationItemMutation,
   useRemoveEducationItemMutation,
   useAddExperienceItemMutation,
-  useRemoveExperienceItemMutation
+  useRemoveExperienceItemMutation,
+  useFetchUsersQuery
 } = supabaseApi

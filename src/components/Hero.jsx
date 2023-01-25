@@ -4,8 +4,11 @@ import HeroBG from '../assets/hero_bg.jpg'
 import { useTheme } from '@mui/material/styles';
 import styled from 'styled-components';
 import CardForm from './CardForm';
+import { useSelector } from 'react-redux';
 
 const Hero = () => {
+
+  const auth = useSelector(state => state.auth)
 
   const theme = useTheme()
   const mainColor = theme.palette.primary.main
@@ -13,6 +16,7 @@ const Hero = () => {
   return (
     <Box
       component="div"
+      minHeight="90vh"
       sx={{
         backgroundImage: `linear-gradient(rgba(0,0,0,.7), rgba(0,0,0,.7)), url(${HeroBG}) `,
         backgroundPosition:"center",
@@ -24,7 +28,7 @@ const Hero = () => {
       >
         <Box
           display="flex"
-          justifyContent="space-around"
+          justifyContent={`${auth.user ? 'center' : 'space-around'}`}
           alignItems="center"
           flexWrap="wrap"
           padding="2.4rem 0"
@@ -66,7 +70,7 @@ const Hero = () => {
             </Typography>
           </Box>
           <Box>
-            <CardForm />
+            {!auth.user && <CardForm />}
           </Box>
         </Box>
       </Container>

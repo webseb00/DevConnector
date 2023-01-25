@@ -29,11 +29,11 @@ const SocialsTab = () => {
 
   const { handleSubmit, register, formState: { errors }, control, reset } = useForm({ 
     defaultValues: {
-      youtube: socialData?.data[0].youtube || '',
-      twitter: socialData?.data[0].twitter || '',
-      instagram: socialData?.data[0].instagram || '',
-      github: socialData?.data[0].github || '',
-      linkedin: socialData?.data[0].linkedin || '',
+      youtube: socialData?.data[0]?.youtube || '',
+      twitter: socialData?.data[0]?.twitter || '',
+      instagram: socialData?.data[0]?.instagram || '',
+      github: socialData?.data[0]?.github || '',
+      linkedin: socialData?.data[0]?.linkedin || '',
     }
   })
 
@@ -196,7 +196,6 @@ const SocialsTab = () => {
             <TextField
               {...field}
               { ...register('youtube', {
-                required: true,
                 minLength: {
                   value: 10,
                   message: 'Url is too short'
@@ -232,7 +231,6 @@ const SocialsTab = () => {
             <TextField
               {...field}
               { ...register('github', {
-                required: true,
                 minLength: {
                   value: 10,
                   message: 'Url is too short'

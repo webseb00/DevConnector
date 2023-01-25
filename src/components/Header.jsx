@@ -15,7 +15,8 @@ import {
   Tooltip,
   IconButton,
   Menu,
-  MenuItem
+  MenuItem,
+  Paper
 } from '@mui/material';
 
 import { useSelector, useDispatch } from 'react-redux';
@@ -23,6 +24,7 @@ import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { signOut } from '../features/auth/authSlice';
 
 import AvatarWidget from './AvatarWidget';
+import { resetUserProfile } from '../features/profile/profileSlice';
 
 const Header = () => {
 
@@ -51,7 +53,8 @@ const Header = () => {
 
   const handleLogoutUser = () => {
     dispatch(signOut())
-
+    dispatch(resetUserProfile())
+    
     handleCloseUserMenu();
     navigate('/')
   }
@@ -125,24 +128,40 @@ const Header = () => {
                 ))}
               </Box>
               <Box sx={{ flexGrow: 0, marginLeft: 'auto' }}>
+              <Tooltip title="Open settings">
                 <Box
-                  component="div"
+                  onClick={handleOpenUserMenu}
+                  component={Paper}
                   sx={{
                     display: 'flex',
-                    alignItems: 'center'
+                    alignItems: 'center',
+                    padding: '5px 10px',
+                    backgroundColor: 'custom_slate.light',
+                    cursor: 'pointer'
                   }}
                 >
-                  <Typography marginRight="10px" sx={{ display: { xs: 'none', md: 'flex' } }}>{user.user_metadata.full_name}</Typography>
-                  <Tooltip title="Open settings">
-                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                  <Typography 
+                    marginRight="10px" 
+                    sx={{ 
+                      display: { 
+                        xs: 'none', 
+                        sm: 'flex' 
+                      },
+                      color: 'custom_slate.dark',
+                    }}
+                  >
+                    {user.user_metadata.full_name}
+                  </Typography>
+                  
+                    <IconButton  sx={{ p: 0 }}>
                       <AvatarWidget 
                         fullName={user.user_metadata.full_name} 
                         size={40}
                         url={profile?.avatar_url}
                       />
                     </IconButton>
-                  </Tooltip>
                 </Box>
+              </Tooltip>
                 <Menu
                   sx={{ mt: '45px' }}
                   id="menu-appbar"

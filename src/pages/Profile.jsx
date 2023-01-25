@@ -1,5 +1,5 @@
 import React from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, Link as RouterLink } from 'react-router-dom'
 
 import { 
   Container,
@@ -10,13 +10,13 @@ import {
   Stack,
   Divider,
   Link,
-  Card,
-  CardHeader,
-  CardContent
+  Button
 } from '@mui/material'
-import CircularProgress from '@mui/material/CircularProgress';
 
-import AvatarWidget from '../components/AvatarWidget'
+import { 
+  PageLoader,
+  AvatarWidget
+} from '../components'
 
 import { 
   useFetchUserProfileQuery,
@@ -30,6 +30,8 @@ import TwitterIcon from '@mui/icons-material/Twitter';
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import PublicIcon from '@mui/icons-material/Public';
 
 const Profile = () => {
 
@@ -41,26 +43,10 @@ const Profile = () => {
   const { data: educationData } = useFetchUserEducationQuery(params.id)
   const { data: experienceData } = useFetchUserExperienceQuery(params.id)
 
-  if(isLoadingProfile || isLoadingSocials) return (
-    <Box
-      sx={{
-        height: '90vh',
-        backgroundColor: 'custom_slate.dark',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: '2rem'
-      }}
-    >
-      <Box sx={{ textAlign: 'center' }}>
-        <CircularProgress sx={{ fontSize: '3.4rem' }} />
-        <Typography sx={{ fontSize: '1.2rem', marginTop: '.8rem', color: 'custom_silver.main' }}>Loading...</Typography>
-      </Box>
-    </Box>
-  ) 
+  if(isLoadingProfile || isLoadingSocials) return <PageLoader />
   
-  const { instagram, linkedin, twitter, youtube, github } = socialsData.data[0]
-  const { avatar_url, full_name, company, location, skills, status, user_name, website, bio } = profileData.data[0]
+  const socials = socialsData?.data[0]
+  const { avatar_url, full_name, company, location, skills, status, website, bio } = profileData?.data[0]
 
   return (
     <Box 
@@ -68,7 +54,18 @@ const Profile = () => {
         padding: '2rem 0'
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="sm">
+        <Button
+          component={RouterLink}
+          variant="contained"
+          to="/developers"
+          sx={{
+            marginBottom: '1rem'
+          }}
+        >
+          <ChevronLeftIcon />
+          Back To Profiles
+        </Button>
         <Box>
           <Paper
             elevation={1}
@@ -96,17 +93,29 @@ const Profile = () => {
             >
               {full_name}
             </Typography> 
-            {status && <Typography>{status}</Typography>}
-            {company && <Typography>Developer at {company}</Typography>}
+            {status && company ? <Typography>{status} at {company}</Typography> : ''}
+            {!status && company ? <Typography>{company}</Typography> : ''}
+            {status && !company ? <Typography>{status}</Typography> : ''}
             {location && <Typography>{location}</Typography>}
-            <Divider />
+            {website && 
+              <Box sx={{ display: 'flex' }}>
+                <Typography marginRight="5px">
+                  <b>Website/Portoflio:</b>
+                </Typography>
+                <Link
+                  href={`${website}`}
+                  target="_blank"
+                >
+                  <PublicIcon />
+                </Link>
+              </Box>}
             <Stack
               spacing={1}
               direction="row"
-              marginTop="1rem"
+              // marginTop="1rem"
             >
-              {linkedin && 
-              <Link href={`${linkedin}`} target="_blank">
+              {socials?.linkedin && 
+              <Link href={`${socials.linkedin}`} target="_blank">
                 <LinkedInIcon 
                   sx={{ 
                     fontSize: '2rem', 
@@ -118,8 +127,8 @@ const Profile = () => {
                   }} 
                 />
               </Link>}
-              {twitter && 
-              <Link href={`${twitter}`} target="_blank">
+              {socials?.twitter && 
+              <Link href={`${socials.twitter}`} target="_blank">
                 <TwitterIcon 
                   sx={{ 
                     fontSize: '2rem', 
@@ -131,8 +140,8 @@ const Profile = () => {
                   }} 
                 />
               </Link>}
-              {youtube && 
-              <Link href={`${youtube}`} target="_blank">
+              {socials?.youtube && 
+              <Link href={`${socials.youtube}`} target="_blank">
                 <YouTubeIcon 
                   sx={{ 
                     fontSize: '2rem', 
@@ -144,8 +153,8 @@ const Profile = () => {
                   }} 
                 />
               </Link>}
-              {instagram && 
-              <Link href={`${instagram}`} target="_blank">
+              {socials?.instagram && 
+              <Link href={`${socials.instagram}`} target="_blank">
                 <InstagramIcon 
                   sx={{ 
                     fontSize: '2rem', 
@@ -157,8 +166,8 @@ const Profile = () => {
                   }} 
                 />
               </Link>}
-              {github && 
-              <Link href={`${github}`} target="_blank">
+              {socials?.github && 
+              <Link href={`${socials.github}`} target="_blank">
                 <GitHubIcon 
                   sx={{ 
                     fontSize: '2rem', 
@@ -239,6 +248,9 @@ const Profile = () => {
               <Typography
                 textAlign="justify"
                 variant="body1"
+                sx={{
+                  padding: '0 1.5rem 2rem 1.5rem'
+                }}
               >
                 {bio}
               </Typography>
@@ -248,21 +260,12 @@ const Profile = () => {
         <Box
           sx={{
             display: 'flex',
-            alignItems: {
-              xs: 'stretch',
-              md: 'flex-start'
-            },
-            flexDirection: {
-              xs: 'column',
-              md: 'row'
-            },
-            justifyContent: 'center',
+            flexDirection: 'column',
             gap: '1rem'
           }}
         >
           <Box
             sx={{
-              flex: '1',
               backgroundColor: 'custom_silver.main',
               borderRadius: '4px'
             }}
@@ -276,10 +279,43 @@ const Profile = () => {
             >
               Experience
             </Typography>
+            {experienceData?.data && experienceData.data.map((item, idx) => {
+              const { current, title, company, from, to } = item
+              return (
+                <Box key={idx}>
+                  <Divider />
+                  <Box
+                    sx={{
+                      padding: '.5rem 1rem 1rem 1rem'
+                    }}
+                  >
+                    <Typography 
+                      fontSize="1.2rem" 
+                      fontWeight="bold"
+                      sx={{
+                        color: 'custom_slate.dark'
+                      }}
+                    >
+                      {title}
+                    </Typography>
+                    <Typography 
+                      variant='body2' 
+                      component="span" 
+                      marginBottom=".4rem"
+                      sx={{
+                        display: 'inline-block'
+                      }}
+                    >
+                      {`From: ${from} / To: ${current ? 'Current' : to}`}
+                    </Typography>
+                    <Typography><b>Company:</b> {company}</Typography>
+                  </Box>
+                </Box>
+                )
+              })}
           </Box>
           <Box
             sx={{
-              flex: '1',
               backgroundColor: 'custom_silver.main',
               borderRadius: '4px'
             }}

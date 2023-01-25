@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import Layout from './components/Layout'
-import { Routes, Route, useNavigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 
 import {
   Home,
@@ -15,8 +15,6 @@ import ProtectedRoutes from './components/routing/ProtectedRoutes'
 import { useSelector, useDispatch } from 'react-redux'
 import { useFetchUserProfileQuery } from './services/supabaseApi'
 import { setUserProfile } from './features/profile/profileSlice'
-import { signOut } from './features/auth/authSlice'
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -24,7 +22,6 @@ import { skipToken } from '@reduxjs/toolkit/query/react'
 
 function App() {
 
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const auth = useSelector(state => state.auth)
 
