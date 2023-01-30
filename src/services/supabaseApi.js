@@ -4,7 +4,7 @@ import { supabase } from '../supabaseClient'
 export const supabaseApi = createApi({
   reducerPath: 'supabaseApi',
   baseQuery: fakeBaseQuery(),
-  tagTypes: ['Education', 'Experience'],
+  tagTypes: ['Education', 'Experience', 'Socials', 'Post'],
   endpoints: (build) => ({
     fetchUserProfile: build.query({
       queryFn: async (userId) => {
@@ -24,7 +24,8 @@ export const supabaseApi = createApi({
           .eq('user_id', userId)
 
         return { data: user }
-      }
+      },
+      providesTags: ['Socials']
     }),
     fetchUsers: build.query({
       queryFn: async () => {
@@ -98,6 +99,53 @@ export const supabaseApi = createApi({
         return { data: user }
       },
       invalidatesTags: ['Experience']
+    }),
+    addSocialLinks: build.mutation({
+      queryFn: async payload => {
+        const { userId, youtube, twitter, instagram, github, linkedin } = payload
+        // firstly, checky if the socials table already exists in DB
+        const { data, error } = await supabase
+          .from('socials')
+          .select()
+          .eq('user_id', userId)
+        
+          if(data.length) {
+            const data = await supabase
+              .from('socials')
+              .update({ user_id: userId, youtube, twitter, instagram, github, linkedin })
+              .eq('user_id', userId)
+            
+            return data
+          } else {
+            const data = await supabase
+              .from('socials')
+              .insert({ user_id: userId, youtube, twitter, instagram, github, linkedin })
+              .select()
+
+            return data
+          }
+      },
+      invalidatesTags: ['Socials']
+    }),
+    fetchPosts: build.query({
+      queryFn: async () => {
+        const posts = await supabase
+          .from('post')
+          .select()
+
+        return posts
+      },
+      providesTags: ['Post']
+    }),
+    addPost: build.mutation({
+      queryFn: async payload => {
+        const data = await supabase
+          .from('post')
+          .insert(payload)
+
+        return data
+      },
+      invalidatesTags: ['Post']
     })
   })
 })
@@ -112,5 +160,8 @@ export const {
   useRemoveEducationItemMutation,
   useAddExperienceItemMutation,
   useRemoveExperienceItemMutation,
-  useFetchUsersQuery
+  useFetchUsersQuery,
+  useAddSocialLinksMutation,
+  useFetchPostsQuery,
+  useAddPostMutation
 } = supabaseApi

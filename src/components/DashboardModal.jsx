@@ -15,11 +15,22 @@ const DashboardModal = ({ modal, setModal, component, title }) => {
 
   return (
     <Dialog
-      maxWidth="lg"
       open={modal}
       onClose={handleClose}
       aria-labelledby="scroll-dialog-title"
       aria-describedby="scroll-dialog-description"
+      sx={{
+        '& .MuiPaper-root': {
+          maxHeight: 'unset',
+          overflowY: 'unset',
+          maxWidth: '600px',
+          minWidth: '300px',
+          width: '100%'
+        },
+        '& .MuiDialogContent-root': {
+          overflowY: 'unset'
+        }
+      }}
     >
       <DialogTitle id="scroll-dialog-title" textAlign="center">
         {title}

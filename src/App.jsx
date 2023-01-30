@@ -7,7 +7,8 @@ import {
   Login,
   Dashboard,
   Profile,
-  Developers
+  Developers,
+  Posts
 } from './pages'
 
 import ProtectedRoutes from './components/routing/ProtectedRoutes'
@@ -44,6 +45,7 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/developers" element={<Developers />} />
+            <Route path="/posts" element={<Posts />} />
           </Route>
         </Routes>
       </Layout>

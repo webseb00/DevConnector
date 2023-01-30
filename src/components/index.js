@@ -8,6 +8,8 @@ import ExperienceList from "./ExperienceList"
 import EducationList from "./EducationList"
 import PageLoader from "./PageLoader"
 import AvatarWidget from "./AvatarWidget"
+import PostItem from './PostItem'
+import PostForm from "./PostForm"
 
 export {
   ExperienceTab,
@@ -19,5 +21,7 @@ export {
   ExperienceList,
   EducationList,
   PageLoader,
-  AvatarWidget
+  AvatarWidget,
+  PostItem,
+  PostForm
 }

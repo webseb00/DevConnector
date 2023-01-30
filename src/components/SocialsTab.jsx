@@ -16,8 +16,7 @@ import {
   AiFillGithub
 } from 'react-icons/ai'
 import { useSelector } from 'react-redux';
-import { useFetchUserSocialsQuery } from '../services/supabaseApi';
-import { supabase } from '../supabaseClient';
+import { useFetchUserSocialsQuery, useAddSocialLinksMutation } from '../services/supabaseApi';
 import { toast } from 'react-toastify';
 
 const SocialsTab = () => {
@@ -25,7 +24,9 @@ const SocialsTab = () => {
   const [loading, setLoading] = useState(false)
 
   const { id: userId } = useSelector(state => state.auth.user)
-  const { data: socialData } = useFetchUserSocialsQuery(userId, { refetchOnMountOrArgChange: true })
+
+  const [addSocialLinks] = useAddSocialLinksMutation()
+  const { data: socialData } = useFetchUserSocialsQuery(userId)
 
   const { handleSubmit, register, formState: { errors }, control, reset } = useForm({ 
     defaultValues: {
@@ -43,10 +44,8 @@ const SocialsTab = () => {
     try {
       setLoading(true)
 
-      const { error } = await supabase
-      .from('socials')
-      .upsert({ user_id: userId, youtube, twitter, instagram, github, linkedin })
-      .select()
+      const payload = { userId, youtube, twitter, instagram, github, linkedin }
+      const { data, error } = await addSocialLinks(payload)
 
       if(error) throw error
 

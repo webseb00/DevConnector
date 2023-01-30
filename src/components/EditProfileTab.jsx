@@ -21,7 +21,6 @@ const EditProfileTab = () => {
   const { id: userId, user_metadata: { full_name } } = useSelector(state => state.auth.user)
   const { profile } = useSelector(state => state.profile)
   
-  const [profession, setProfession] = useState('')
   const [loading, setLoading] = useState(false)
   
   const { handleSubmit, register, formState: { errors }, control, reset } = useForm({ 
@@ -42,8 +41,6 @@ const EditProfileTab = () => {
       reset(profile)
     }
   }, [profile, reset])
-
-  const handleProfession = e => setProfession(e.target.value)
 
   const onSubmit = async formData => {
     const { user_name, location, website, skills, githubUserName, bio, company, status } = formData
