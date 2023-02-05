@@ -8,9 +8,10 @@ import {
   Dashboard,
   Profile,
   Developers,
-  Posts
+  Posts,
+  Comments
 } from './pages'
-
+import AddPostWrapper from './components/AddPostWrapper'
 import ProtectedRoutes from './components/routing/ProtectedRoutes'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -45,7 +46,8 @@ function App() {
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile/:id" element={<Profile />} />
             <Route path="/developers" element={<Developers />} />
-            <Route path="/posts" element={<Posts />} />
+            <Route path="/posts" element={<AddPostWrapper component={<Posts />} />} />
+            <Route path="/comments/:id" element={<Comments />} />
           </Route>
         </Routes>
       </Layout>

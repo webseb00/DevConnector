@@ -4,6 +4,7 @@ import Dashboard from './Dashboard'
 import Profile from './Profile'
 import Developers from './Developers'
 import Posts from './Posts'
+import Comments from './Comments'
 
 export {
   Home,
@@ -11,5 +12,6 @@ export {
   Dashboard,
   Profile,
   Developers,
-  Posts
+  Posts,
+  Comments
 }

@@ -157,7 +157,7 @@ const Header = () => {
                       <AvatarWidget 
                         fullName={user.user_metadata.full_name} 
                         size={40}
-                        url={profile?.avatar_url}
+                        userID={user.id}
                       />
                     </IconButton>
                 </Box>

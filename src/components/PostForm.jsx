@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import PropTypes from 'prop-types'
+
 import {
   Box,
   Button,
@@ -11,7 +13,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { useAddPostMutation } from '../services/supabaseApi';
 
-const PostForm = () => {
+const PostForm = ({ setModal }) => {
 
   const userId = useSelector((state) => state.auth.user.id)
   const [addPost] = useAddPostMutation()
@@ -20,7 +22,6 @@ const PostForm = () => {
   const { register, handleSubmit, formState, formState: { errors }, control } = useForm()
 
   const onSubmit = async data => {
-    console.log(data)
     try {
       setLoading(true)
       const { error } = await addPost({ user_id: userId, text: data.text })
@@ -32,6 +33,8 @@ const PostForm = () => {
         theme: 'colored',
         hideProgressBar: true
       })
+
+      setModal(false)
     } catch(error) {
       console.log(error)
     } finally {
@@ -98,6 +101,10 @@ const PostForm = () => {
       </Box>
     </Box>
   )
+}
+
+PostForm.propTypes = {
+  setModal: PropTypes.func.isRequired
 }
 
 export default PostForm

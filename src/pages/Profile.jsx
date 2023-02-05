@@ -46,7 +46,7 @@ const Profile = () => {
   if(isLoadingProfile || isLoadingSocials) return <PageLoader />
   
   const socials = socialsData?.data[0]
-  const { avatar_url, full_name, company, location, skills, status, website, bio } = profileData?.data[0]
+  const { full_name, company, location, skills, status, website, bio } = profileData?.data[0]
 
   return (
     <Box 
@@ -84,7 +84,6 @@ const Profile = () => {
               fullName={full_name}
               userID={params.id}
               size={140}
-              url={avatar_url}
             /> 
             <Typography
               variant="h4"
@@ -112,7 +111,6 @@ const Profile = () => {
             <Stack
               spacing={1}
               direction="row"
-              // marginTop="1rem"
             >
               {socials?.linkedin && 
               <Link href={`${socials.linkedin}`} target="_blank">

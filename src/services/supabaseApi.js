@@ -127,15 +127,28 @@ export const supabaseApi = createApi({
       },
       invalidatesTags: ['Socials']
     }),
-    fetchPosts: build.query({
-      queryFn: async () => {
+    fetchPosts: build.mutation({
+      queryFn: async payload => {
+        const { from, to } = payload
+
         const posts = await supabase
           .from('post')
-          .select()
+          .select('*')
+          .range(from, to)
 
         return posts
       },
       providesTags: ['Post']
+    }),
+    fetchPostsCount: build.query({
+      queryFn: async () => {
+        const { count } = await supabase
+          .from('post')
+          .select('*', { count: 'exact', head: true })
+
+        return { data: count }
+      },
+      invalidatesTags: ['Post']
     }),
     addPost: build.mutation({
       queryFn: async payload => {
@@ -162,6 +175,7 @@ export const {
   useRemoveExperienceItemMutation,
   useFetchUsersQuery,
   useAddSocialLinksMutation,
-  useFetchPostsQuery,
+  useFetchPostsMutation,
+  useFetchPostsCountQuery,
   useAddPostMutation
 } = supabaseApi

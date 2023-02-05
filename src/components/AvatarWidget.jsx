@@ -10,29 +10,36 @@ import { toast } from 'react-toastify';
 import { supabase } from '../supabaseClient';
 
 const AvatarWidget = ({ fullName, userID, size, uploadButton, url }) => {
-
   const [avatarURL, setAvatarURL] = useState(null)
   const [uploading, setUploading] = useState(false)
+  const [userURL, setUserURL] = useState(null)
+
+  const getUserURL = async (userID) => {
+    const data = await supabase.from('profiles').select('avatar_url').eq('id', userID)
+    if(data?.data[0]?.avatar_url) setUserURL(data?.data[0].avatar_url)
+  }
 
   useEffect(() => {
-      if(url) {
-        downloadImage(url)
-      }
-    }, [url])
+    if(userID) getUserURL(userID)
+  }, [userID])
+
+  useEffect(() => {
+    if(userURL) downloadImage(userURL)
+  }, [userURL])
 
   const downloadImage = async (path) => {
     try {
       const { data, error: downloadError } = await supabase.storage.from('avatars').download(path)
-
       if(downloadError) throw downloadError
       const url = URL.createObjectURL(data)
-      
+
       setAvatarURL(url)
+
     } catch(error) {
       console.log(`Error downloading image: ${error}`)
     }
   }
-
+  
   const uploadAvatar = async (imageFile) => {
     try {
       setUploading(true)
@@ -47,17 +54,18 @@ const AvatarWidget = ({ fullName, userID, size, uploadButton, url }) => {
       const filePath = `${fileName}`
 
       const { error: uploadError } = await supabase.storage.from('avatars').upload(filePath, file)
-      const { error } = await supabase.from('profiles').upsert({ id: userID, avatar_url: filePath })
+      const { error } = await supabase.from('profiles').update({ avatar_url: filePath }).eq('id', userID,)
 
       if(uploadError) throw uploadError
       if(error) throw error
+
+      downloadImage(filePath)
 
       toast.success('Your image was uploaded!', {
         position: 'bottom-center',
         theme: 'colored',
         hideProgressBar: true
       })
-
     } catch(error) {
       toast.error(error.error_description || error.message, {
         position: 'bottom-center',
